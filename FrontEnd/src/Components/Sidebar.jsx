@@ -257,16 +257,7 @@ const Sidebar = () => {
             </li>
 
             <li className="side-link">
-              <div
-                className="link"
-                onClick={(e) =>
-                  handleItemClick(e, {
-                    label: "Logout",
-                    route: "/logout",
-                    actions: [{ label: "Confirm Logout", action: "open" }],
-                  })
-                }
-              >
+              <div className="link">
                 <IoLogOut className="icon" />
                 <span className="text nav-text">Logout</span>
               </div>
