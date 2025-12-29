@@ -452,10 +452,11 @@ input:checked + .slider {
   z-index: 500;
   transform: translateX(-100%);
   opacity: 0;
-
+  pointer-events: auto;
   transition:
     transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.3s ease;
+  overflow-x: hidden;
 }
 
 .sidebar.sidebar-enter {
@@ -478,6 +479,8 @@ input:checked + .slider {
 
 .sidebar.close .text {
   opacity: 0;
+  pointer-events: none;
+  display: none;
 }
 
 .sidebar .image {
@@ -541,22 +544,17 @@ header .image-text .header-text {
 .sidebar header .toggle {
   position: absolute;
   top: 50%;
-  right: -25px;
-
+  right: -11px;
   height: 26px;
   width: 26px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background-color: var(--text-color);
-  color: var(--bg-color);
-
+  background-color: var(--bg-color);
+  color: var(--text-color);
   border-radius: 50%;
   cursor: pointer;
-
-  /* 🔑 animation */
+  z-index: 1000;
   transition: transform 0.3s ease;
   transform-origin: center;
 }
@@ -626,6 +624,10 @@ header .image-text .header-text {
 .sidebar.close .search-box input {
   pointer-events: none;
   opacity: 0;
+}
+
+.sidebar.close .search-box {
+  pointer-events: none;
 }
 
 .context-menu {
