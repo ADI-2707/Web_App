@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { FaUserShield } from "react-icons/fa";
 
 const Login = () => {
   const handleSubmit = (e) => {
@@ -12,6 +13,9 @@ const Login = () => {
     <h1 className='text-center text-3xl md:text-6xl font-bold mt-25 hero-header'>Welcome Back!</h1>
     <div className="login-page -mt-2.5">
       <div className="login-card">
+        <div className="icon-header">
+          <FaUserShield size={32} color="var(--accent-color)" />
+        </div>
         <h2>Login</h2>
         <p>Please enter your details to sign in.</p>
         

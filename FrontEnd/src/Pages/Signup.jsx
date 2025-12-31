@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserPlus, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
+import { FaUserPlus } from "react-icons/fa";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -38,11 +39,11 @@ const Signup = () => {
 
   return (
     <>
-    <h1 className='text-center text-3xl md:text-6xl font-bold mt-25 hero-header mb-22'>Start managing your recipes here!</h1>
+    <h1 className='text-center text-3xl md:text-6xl font-bold mt-25 hero-header mb-18'>Start managing your recipes here!</h1>
     <div className="login-page">
       <div className="login-card">
         <div className="icon-header">
-           <UserPlus size={32} color="var(--accent-color)" />
+           <FaUserPlus size={32} color="var(--accent-color)" />
         </div>
         <h2>Create Account</h2>
         
