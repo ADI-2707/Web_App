@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const handleSubmit = (e) => {
@@ -36,7 +37,7 @@ const Login = () => {
         </form>
         
         <p className="signup-redirect">
-          Don't have an account? <span className="link-text">Sign up</span>
+          Don't have an account? <Link to="/signup"><span className="link-text">Sign up</span></Link>
         </p>
       </div>
     </div>

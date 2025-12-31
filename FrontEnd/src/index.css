@@ -67,7 +67,7 @@ main {
   z-index: 9999; /* Ensures it stays above all other content */
   display: flex;
   align-items: center;
-  gap: 10px; /* Space between toggle and text if needed */
+  gap: 5px; /* Space between toggle and text if needed */
   background: var(--bg-color); /* Matches theme */
   padding: 8px;
   border-radius: 50px;
@@ -88,8 +88,8 @@ main {
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 40px;
+  height: 24px;
 }
 
 /* The slider track */
@@ -109,8 +109,8 @@ main {
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 16px;
+  width: 16px;
   left: 4px;
   bottom: 4px;
   background-color: var(--bg-color);
@@ -126,7 +126,7 @@ main {
 
 /* Move the circle when checked */
 input:checked + .slider:before {
-  transform: translateX(26px); /* This makes the circle slide */
+  transform: translateX(16px); /* This makes the circle slide */
 }
 
 /* Optional: change the slider background color when checked */
@@ -134,8 +134,7 @@ input:checked + .slider {
   background-color: var(--accent-color);
 }
 
-/* ===== FIXED CENTER NAVBAR (CORRECT) ===== */
-
+/* ===== NAVBAR ===== */
 .navbar {
   position: sticky;
   z-index: 100;
@@ -160,7 +159,7 @@ input:checked + .slider {
 
 /* THE ACTUAL NAVBAR */
 .navbar-inner {
-  width: 1100px; /* 🔒 FIXED WIDTH */
+  width: 1100px;
   max-width: calc(100vw - 120px);
   height: 4rem;
   display: flex;
@@ -372,7 +371,7 @@ input:checked + .slider {
 
 /* Make shadow stronger in dark mode for visibility */
 [dark-mode="dark"] .login-card {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .login-card h2 {
@@ -448,8 +447,6 @@ input:checked + .slider {
   text-decoration: none;
 }
 
-/* Add this to your existing CSS */
-
 .icon-header {
   margin-bottom: 15px;
   display: flex;
@@ -481,7 +478,6 @@ input:checked + .slider {
   font-size: 14px;
 }
 
-/* Ensure the confirm password field looks consistent */
 .input-group input {
   transition:
     border-color 180ms ease,
