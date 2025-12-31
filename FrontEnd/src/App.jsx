@@ -9,6 +9,7 @@ import Dashboard from "./Pages/Dashboard.jsx";
 import About from "./Pages/About.jsx";
 import Contact from "./Pages/Contact.jsx";
 import Sidebar from "./Components/Sidebar.jsx"
+import ForgetPassword from "./Pages/ForgetPassword.jsx";
 
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path='/forget-password' element={<ForgetPassword />} />
       </Routes>
       </main>
     </Router>
