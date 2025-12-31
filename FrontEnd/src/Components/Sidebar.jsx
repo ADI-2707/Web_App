@@ -110,11 +110,10 @@ const SIDEBAR_ITEMS = [
 
 /* ===================== COMPONENT ===================== */
 
-const Sidebar = () => {
+const Sidebar = ({ isClosed, setIsClosed }) => {
   const navigate = useNavigate();
 
   /* 🔒 Always start collapsed */
-  const [isClosed, setIsClosed] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   const [contextMenu, setContextMenu] = useState({

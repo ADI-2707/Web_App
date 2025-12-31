@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ isSidebarClosed }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
@@ -21,8 +21,9 @@ const Navbar = () => {
       setMounted(true);
     }
   }, []);
+  
   return (
-    <nav className={`navbar ${mounted ? "navbar-enter" : ""}`}>
+    <nav className={`navbar ${mounted ? "navbar-enter" : ""} ${isSidebarClosed ? "sidebar-closed" : "sidebar-open"}`}>
       <div className="navbar-inner">
         <div className="nav-logo">
           <img src="app.svg" className="h-9 w-9" alt="Logo" />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Mode from "./Utility/Mode.jsx";
 import Home from "./Pages/Home.jsx";
@@ -13,12 +13,13 @@ import ForgetPassword from "./Pages/ForgetPassword.jsx";
 
 
 const App = () => {
+  const [isSidebarClosed, setIsSidebarClosed] = useState(true);
   return (
     <Router>
-      <Sidebar />
-      <Navbar />
+      <Sidebar isClosed={isSidebarClosed} setIsClosed={setIsSidebarClosed} />
+      <Navbar isSidebarClosed={isSidebarClosed} />
       <Mode />
-      <main className="app-content">
+      <main className={`app-content ${isSidebarClosed ? "sidebar-closed" : "sidebar-open"}`}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
