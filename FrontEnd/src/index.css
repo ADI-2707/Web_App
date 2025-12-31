@@ -348,6 +348,7 @@ input:checked + .slider {
   align-items: center;
   min-height: calc(100vh - 4rem); /* Adjusting for navbar height */
   padding: 20px;
+  margin-top: -80px;
 }
 
 .login-card {

@@ -8,9 +8,11 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
+    <>
+    <h1 className='text-center text-3xl md:text-6xl font-bold mt-25 hero-header'>Welcome Back!</h1>
+    <div className="login-page -mt-2.5">
       <div className="login-card">
-        <h2>Welcome Back</h2>
+        <h2>Login</h2>
         <p>Please enter your details to sign in.</p>
         
         <form onSubmit={handleSubmit}>
@@ -41,6 +43,7 @@ const Login = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

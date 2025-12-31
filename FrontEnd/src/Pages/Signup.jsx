@@ -37,6 +37,8 @@ const Signup = () => {
   };
 
   return (
+    <>
+    <h1 className='text-center text-3xl md:text-6xl font-bold mt-25 hero-header mb-22'>Start managing your recipes here!</h1>
     <div className="login-page">
       <div className="login-card">
         <div className="icon-header">
@@ -82,6 +84,7 @@ const Signup = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 
