@@ -105,7 +105,7 @@ const HeroSection = () => {
           titleClass="item-head"
           textClass="item-p1 text-yellow-400"
           videoSrc={recipeVideo}
-          description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate quia soluta minus? Necessitatibus, perferendis magnam. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate quia soluta minus? Necessitatibus, perferendis magnam.Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate quia soluta minus? Necessitatibus, perferendis magnam."
+          description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate quia soluta minus? Necessitatibus, perferendis magnam. Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate quia soluta minus? Necessitatibus, perferendis magnam.Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptate quia soluta minus? Necessitatibus, perferendis magnam. Lorem, ipsum dolor sit amet consectetur adipisicing elite. Lorem, ipsum dolor sit amet consectetur adipisicing elite. Lorem, ipsum dolor sit amet consectetur adipisicing elite. Lorem, ipsum dolor sit amet consectetur adipisicing elite. Lorem, ipsum dolor sit amet consectetur."
           showStats={true}
           stats={{
             label1: "Batches",
@@ -177,7 +177,7 @@ const HeroSection = () => {
           titleClass="item-head"
           textClass="item-p5 text-blue-400"
           videoSrc={historyVideo}
-          description="Lorem, ipsum dolor sit amet consectetur adipisicing elite."
+          description="Lorem, ipsum dolor sit amet consectetur adipisicing elite. Lorem, ipsum dolor sit amet consectetur adipisicing elite."
           showStats={false}
           stats={{
             label1: "Clients",
