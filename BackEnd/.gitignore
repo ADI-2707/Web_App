@@ -1,0 +1,32 @@
+# ========================
+# Python / Django
+# ========================
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.log
+
+# Django database
+db.sqlite3
+
+# Django env files
+.env
+.env.*
+
+# ========================
+# OS / Editor
+# ========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ========================
+# Coverage / Test
+# ========================
+.coverage
+htmlcov/
+.pytest_cache/
