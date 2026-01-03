@@ -10,11 +10,14 @@ import About from "./Pages/About.jsx";
 import Contact from "./Pages/Contact.jsx";
 import Sidebar from "./Components/Sidebar.jsx"
 import ForgetPassword from "./Pages/ForgetPassword.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const App = () => {
   const [isSidebarClosed, setIsSidebarClosed] = useState(true);
   return (
+    <>
     <Router>
       <Sidebar isClosed={isSidebarClosed} setIsClosed={setIsSidebarClosed} />
       <Navbar isSidebarClosed={isSidebarClosed} />
@@ -31,6 +34,17 @@ const App = () => {
       </Routes>
       </main>
     </Router>
+     <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
+      </>
   );
 };
 
