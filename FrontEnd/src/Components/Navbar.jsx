@@ -1,40 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { isAuthenticated, getUser, logout } from "../Utility/auth";
 
 const Navbar = ({ isSidebarClosed }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const navigate = useNavigate();
 
+  const loggedIn = isAuthenticated();
+  const user = getUser();
+  const userInitial = user?.email?.charAt(0)?.toUpperCase();
+
   useEffect(() => {
     const hasAnimated = sessionStorage.getItem("navbar-animated");
 
     if (!hasAnimated) {
-      // first load / refresh
       requestAnimationFrame(() => {
         setMounted(true);
         sessionStorage.setItem("navbar-animated", "true");
       });
     } else {
-      // route change → show instantly
       setMounted(true);
     }
   }, []);
-  
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <nav className={`navbar ${mounted ? "navbar-enter" : ""} ${isSidebarClosed ? "sidebar-closed" : "sidebar-open"}`}>
+    <nav
+      className={`navbar ${mounted ? "navbar-enter" : ""} ${
+        isSidebarClosed ? "sidebar-closed" : "sidebar-open"
+      }`}
+    >
       <div className="navbar-inner">
+        {/* Logo */}
         <div className="nav-logo">
           <img src="app.svg" className="h-9 w-9" alt="Logo" />
         </div>
 
-        {/* Hamburger Icon for Mobile */}
+        {/* Hamburger (mobile) */}
         <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X /> : <Menu />}
         </div>
 
-        {/* Nav Links */}
+        {/* Nav links */}
         <ul className={`nav-links ${isOpen ? "active" : ""}`}>
           <li>
             <NavLink
@@ -47,17 +60,21 @@ const Navbar = ({ isSidebarClosed }) => {
               Home
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/dashboard"
-              onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `nav-link ${isActive ? "active" : ""}`
-              }
-            >
-              Dashboard
-            </NavLink>
-          </li>
+
+          {loggedIn && (
+            <li>
+              <NavLink
+                to="/dashboard"
+                onClick={() => setIsOpen(false)}
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          )}
+
           <li>
             <NavLink
               to="/about"
@@ -69,6 +86,7 @@ const Navbar = ({ isSidebarClosed }) => {
               About
             </NavLink>
           </li>
+
           <li>
             <NavLink
               to="/contact"
@@ -80,24 +98,58 @@ const Navbar = ({ isSidebarClosed }) => {
               Contact
             </NavLink>
           </li>
+
+          {/* Mobile auth */}
           <div className="nav-auth-mobile">
-            <button className="button" onClick={() => navigate("/login")}>
-              Login
-            </button>
-            <button className="button" onClick={() => navigate("/signup")}>
-              Sign Up
-            </button>
+            {!loggedIn ? (
+              <>
+                <button className="button" onClick={() => navigate("/login")}>
+                  Login
+                </button>
+                <button className="button" onClick={() => navigate("/signup")}>
+                  Sign Up
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="button" onClick={handleLogout}>
+                  Logout
+                </button>
+                <button
+                  className="user-avatar"
+                  onClick={() => navigate("/user")}
+                >
+                  {userInitial}
+                </button>
+              </>
+            )}
           </div>
         </ul>
 
-        {/* Desktop Auth Buttons */}
+        {/* Desktop auth */}
         <div className="nav-auth-desktop">
-          <button className="button" onClick={() => navigate("/login")}>
-            Login
-          </button>
-          <button className="button" onClick={() => navigate("/signup")}>
-            Sign Up
-          </button>
+          {!loggedIn ? (
+            <>
+              <button className="button" onClick={() => navigate("/login")}>
+                Login
+              </button>
+              <button className="button" onClick={() => navigate("/signup")}>
+                Sign Up
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="button" onClick={handleLogout}>
+                Logout
+              </button>
+              <button
+                className="user-avatar"
+                onClick={() => navigate("/user")}
+              >
+                {userInitial}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </nav>

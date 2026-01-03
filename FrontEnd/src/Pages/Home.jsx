@@ -1,7 +1,14 @@
 import React from "react";
 import HeroSection from "../Components/HeroSection";
+import HomePrivate from "./HomePrivate";
+import { isAuthenticated } from "../Utility/auth";
 
 const Home = () => {
+  
+  if (isAuthenticated()) {
+    return <HomePrivate />;
+  }
+
   return (
     <div>
 
