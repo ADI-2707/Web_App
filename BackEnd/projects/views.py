@@ -13,13 +13,13 @@ from .utils import generate_project_pin
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_projects(request):
-    memberships = ProjectMember.objects.filter(user=request.user).select_related("project")
+    """
+    HOME PAGE:
+    Only projects where the logged-in user is ROOT ADMIN
+    """
+    projects = Project.objects.filter(root_admin=request.user).order_by("-created_at")
 
-    serializer = ProjectListSerializer(
-        memberships,
-        many=True,
-        context={"request": request}
-    )
+    serializer = ProjectListSerializer(projects, many=True)
     return Response(serializer.data)
 
 

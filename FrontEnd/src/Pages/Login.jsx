@@ -56,15 +56,14 @@ const Login = () => {
       localStorage.setItem("accessToken", data.tokens.access);
       localStorage.setItem("refreshToken", data.tokens.refresh);
       localStorage.setItem("user", JSON.stringify(data.user));
+      
       login(data.user);
       toast.success("Login successful");
       navigate("/home", { replace: true });
       
     } catch (error) {
       toast.error(
-        err.response?.data?.non_field_errors?.[0] ||
-        err.response?.data?.detail ||
-        "Invalid email or password"
+        error?.message || "Unable to login. Please try again."
       );
     } finally {
       setLoading(false);

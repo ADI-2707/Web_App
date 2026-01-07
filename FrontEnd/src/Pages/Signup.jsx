@@ -82,19 +82,23 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (loading) return;
 
     // Logic: Check if passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match!");
+      triggerShake();
+      toast.error("Passwords do not match");
       return;
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      triggerShake();
+    toast.error("Password must be at least 8 characters.");
       return;
     }
 
     if (getPasswordStrength(formData.password) < 5) {
+      triggerShake();
       toast.error("Please satisfy all password requirements.");
       return;
     }
@@ -102,12 +106,6 @@ const Signup = () => {
     if (passwordsMismatch) {
       triggerShake();
       toast.error("Passwords do not match");
-      return;
-    }
-
-    if (getPasswordStrength(formData.password) < 5) {
-      triggerShake();
-      toast.error("Please satisfy all password requirements.");
       return;
     }
 
@@ -135,7 +133,8 @@ const Signup = () => {
 
       toast.success("Account created successfully!");
       navigate("/login");
-    } catch (err) {
+      
+    } catch (error) {
       toast.error("Server not reachable. Please try again later.");
     } finally {
       setLoading(false);

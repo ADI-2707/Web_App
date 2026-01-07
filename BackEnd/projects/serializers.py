@@ -1,13 +1,14 @@
 from rest_framework import serializers
-from .models import ProjectMember
+from .models import Project
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
-    id = serializers.UUIDField(source="project.id")
-    name = serializers.CharField(source="project.name")
-    created_at = serializers.DateTimeField(source="project.created_at")
-    role = serializers.CharField()
+    role = serializers.SerializerMethodField()
 
     class Meta:
-        model = ProjectMember
-        fields = ["id", "name", "role", "created_at"]
+        model = Project
+        fields = ["id", "name", "created_at", "role"]
+
+    def get_role(self, obj):
+        # Root admin always sees ADMIN on home
+        return "admin"
