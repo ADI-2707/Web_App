@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from .models import UserProfile
 from django.contrib.auth import authenticate
+from .models import Project, ProjectMember
 
 
 # 🔐 Password rule (same as frontend)
@@ -82,3 +83,11 @@ class LoginSerializer(serializers.Serializer):
 
         data["user"] = user
         return data
+    
+
+class ProjectSerializer(serializers.ModelSerializer):
+    owner_name = serializers.CharField(source="owner.full_name", read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ["id", "name", "owner_name", "created_at"]
