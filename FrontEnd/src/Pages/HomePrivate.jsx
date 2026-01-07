@@ -96,12 +96,12 @@ const HomePrivate = () => {
 
       {/* Empty State */}
       {!loading && projects.length === 0 && !error && (
-        <div
-          className="empty-project-wrapper mt-10"
-          onClick={() => setShowModal(true)}
-        >
-          <div className="empty-project-card">
-            <PlusSquare size={64} strokeWidth={1.5} />
+        <div className="empty-project-wrapper mt-10">
+          <div
+            className="empty-project-card card-surface"
+            onClick={() => setShowModal(true)}
+          >
+            <PlusSquare size={64} strokeWidth={1.5} className="plus" />
             <p className="empty-project-text">Create your first project</p>
           </div>
         </div>
@@ -113,7 +113,7 @@ const HomePrivate = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="project-card"
+              className="project-card card-surface"
               onClick={() => openProject(project)}
             >
               <div className="project-card-icon">

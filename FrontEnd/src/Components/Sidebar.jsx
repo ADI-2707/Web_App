@@ -208,7 +208,7 @@ const Sidebar = ({ isClosed, setIsClosed }) => {
             </span>
 
             <div className="text header-text">
-              <span className="name">Web App</span>
+              <span className="name">App Square</span>
               <span className="profession uppercase">
                 ⚠️ Authorized Personnel Only
               </span>
@@ -244,7 +244,7 @@ const Sidebar = ({ isClosed, setIsClosed }) => {
                     onClick={(e) => handleItemClick(e, item)}
                     style={{ position: "relative", overflow: "visible" }}
                   >
-                    <item.icon className="icon" />
+                    <item.icon className="icon h-7 w-7" />
                     <span className="text nav-text">{item.label}</span>
                   </div>
                 </li>
@@ -266,7 +266,7 @@ const Sidebar = ({ isClosed, setIsClosed }) => {
                   })
                 }
               >
-                <FaHistory className="icon" />
+                <FaHistory className="icon h-7 w-7" />
                 <span className="text nav-text">History</span>
               </div>
             </li>
@@ -277,7 +277,7 @@ const Sidebar = ({ isClosed, setIsClosed }) => {
                 data-tooltip="Logout"
                 onClick={handleLogout}
               >
-                <IoLogOut className="icon" />
+                <IoLogOut className="icon h-7 w-7" />
                 <span className="text nav-text">Logout</span>
               </div>
             </li>
