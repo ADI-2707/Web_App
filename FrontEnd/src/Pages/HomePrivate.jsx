@@ -63,6 +63,7 @@ const HomePrivate = () => {
       const res = await api.post("/api/projects/create/", payload);
       setSecurityPin(res.data.pin);
       setShowPinModal(true);
+
       // refresh list
       fetchProjects();
 
@@ -77,7 +78,7 @@ const HomePrivate = () => {
   /* ---------- Open Project ---------- */
   const openProject = (project) => {
     localStorage.setItem("activeProjectId", project.id);
-    navigate(`/dashboard/${project.id}`);
+    navigate(`/projects/${project.id}`);
   };
 
   /* ---------- Render ---------- */

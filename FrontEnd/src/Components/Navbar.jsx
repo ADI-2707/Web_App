@@ -55,7 +55,7 @@ const Navbar = ({ isSidebarClosed }) => {
     >
       <div className="navbar-inner">
         <div className="nav-logo">
-          <img src="app.svg" className="h-9 w-9" alt="Logo" />
+          <img src="/app.svg" className="h-9 w-9" alt="Logo" />
         </div>
 
         <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>

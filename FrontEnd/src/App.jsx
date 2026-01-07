@@ -19,6 +19,7 @@ import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import ForgetPassword from "./Pages/ForgetPassword";
 import Account from "./Pages/Account.jsx";
+import ProjectDetails from "./Pages/ProjectDetails.jsx";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -112,6 +113,14 @@ const App = () => {
                 </PrivateRoute>
               }
             />
+
+            {/* Project Landing Page */}
+            <Route
+              path="/projects/:projectId"
+              element={
+                <PrivateRoute>
+                  <ProjectDetails />
+                </PrivateRoute>} />
           </Routes>
         </main>
       </Router>

@@ -204,7 +204,7 @@ const Sidebar = ({ isClosed, setIsClosed }) => {
         <header>
           <div className="image-text">
             <span className="image">
-              <img src="app.svg" alt="logo" />
+              <img src="/app.svg" alt="logo" />
             </span>
 
             <div className="text header-text">
