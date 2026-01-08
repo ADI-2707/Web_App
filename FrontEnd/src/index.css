@@ -2153,3 +2153,130 @@ header .image-text .header-text {
   transform-origin: center;
   will-change: transform;
 }
+
+.account-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.account-card {
+  padding: 1.75rem;
+  border-radius: 18px;
+  margin-top: 85px;
+}
+
+:root:not([dark-mode="dark"]) .account-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    6px 10px 22px rgba(0, 0, 0, 0.12),
+    2px 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+[dark-mode="dark"] .account-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.account-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.account-card:hover {
+  transform: translateY(-2px);
+}
+
+.account-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.account-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.account-field label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  opacity: 0.65;
+}
+
+.account-field input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: var(--text-base);
+}
+
+:root:not([dark-mode="dark"]) .account-field input {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #111;
+}
+
+[dark-mode="dark"] .account-field input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.account-field input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.password-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .password-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .password-grid .account-field:first-child {
+    grid-column: span 2;
+  }
+}
+
+.password-hint {
+  font-size: 12px;
+  opacity: 0.6;
+  margin: 8px 0 16px;
+}
+
+.primary-btn {
+  margin-top: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: var(--text-color);
+  color: var(--bg-color);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+}
+
+.primary-btn:active {
+  transform: translateY(0);
+}
+
+[dark-mode="dark"] .primary-btn:hover {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 0 18px rgba(255, 255, 255, 0.22);
+}
