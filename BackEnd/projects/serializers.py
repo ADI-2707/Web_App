@@ -4,6 +4,7 @@ from .models import Project, ProjectMember
 
 class ProjectListSerializer(serializers.ModelSerializer):
     role = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -13,17 +14,17 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "public_code",
             "created_at",
             "role",
+            "is_owner",
         ]
 
     def get_role(self, obj):
         user = self.context["request"].user
+        try:
+            member = ProjectMember.objects.get(project=obj, user=user)
+            return member.role
+        except ProjectMember.DoesNotExist:
+            return None
 
-        if obj.root_admin == user:
-            return "admin"
-
-        member = ProjectMember.objects.filter(
-            project=obj,
-            user=user
-        ).first()
-
-        return member.role if member else None
+    def get_is_owner(self, obj):
+        user = self.context["request"].user
+        return obj.root_admin_id == user.id

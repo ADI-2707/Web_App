@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { PlusSquare, Folder } from "lucide-react";
+import { PlusSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CreateProjectModal from "../Components/CreateProjectModal";
 import SecurityPinModal from "../Components/SecurityPinModal";
+import ProjectSection from "../Components/ProjectSection";
 import api from "../Utility/api";
 
 /* ---------- Utils ---------- */
-
 const formatUserName = (fullName) => {
   if (!fullName || typeof fullName !== "string") return "";
   const parts = fullName.trim().split(" ");
@@ -15,7 +15,6 @@ const formatUserName = (fullName) => {
 };
 
 /* ---------- Component ---------- */
-
 const HomePrivate = () => {
   const navigate = useNavigate();
   const debounceRef = useRef(null);
@@ -26,14 +25,13 @@ const HomePrivate = () => {
   const [projects, setProjects] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showModal, setShowModal] = useState(false);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [showPinModal, setShowPinModal] = useState(false);
   const [securityPin, setSecurityPin] = useState(null);
 
-  /* ---------- Fetch My Projects ---------- */
+  /* ---------- Fetch Projects ---------- */
   const fetchProjects = async () => {
     try {
       setLoading(true);
@@ -51,12 +49,11 @@ const HomePrivate = () => {
     fetchProjects();
   }, []);
 
-  /* ---------- Open modal from navbar ---------- */
+  /* ---------- Modal trigger from navbar ---------- */
   useEffect(() => {
     const openModal = () => setShowModal(true);
     window.addEventListener("open-create-project", openModal);
-    return () =>
-      window.removeEventListener("open-create-project", openModal);
+    return () => window.removeEventListener("open-create-project", openModal);
   }, []);
 
   /* ---------- Create Project ---------- */
@@ -65,26 +62,17 @@ const HomePrivate = () => {
     setSecurityPin(res.data.pin);
     setShowPinModal(true);
     fetchProjects();
-    return res.data;
   };
 
-  /* ---------- Debounced Search ---------- */
+  /* ---------- Search (unchanged) ---------- */
   useEffect(() => {
     if (!searchQuery.trim()) return;
 
-    // clear previous debounce
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
+    if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
-      // 🔒 Minimum length rule
       if (searchQuery.length < 3) return;
-
       console.log("Debounced search:", searchQuery);
-
-      // 🔗 future API call
-      // api.get(`/api/projects/search?q=${searchQuery}`)
     }, 450);
 
     return () => clearTimeout(debounceRef.current);
@@ -95,6 +83,11 @@ const HomePrivate = () => {
     console.log("Manual search:", searchQuery);
   };
 
+  /* ---------- Categorization ---------- */
+  const ownedProjects = projects.filter((p) => p.is_owner);
+  const joinedProjects = projects.filter((p) => !p.is_owner && (p.role === "admin" || p.role === "user"));
+  const invitedProjects = projects.filter((p) => p.role === "invited");
+
   /* ---------- Open Project ---------- */
   const openProject = (project) => {
     localStorage.setItem("activeProjectId", project.id);
@@ -104,53 +97,52 @@ const HomePrivate = () => {
   /* ---------- Render ---------- */
   return (
     <div className="home-private-container">
-      <h1 className="home-title mt-5">
+      <h1 className="home-title">
         Welcome{displayName ? `, ${displayName}` : ""}
       </h1>
 
-      {/* 🔍 SEARCH BAR */}
-          <div className="project-search-bar">
-            <input
-              type="text"
-              placeholder="Search project by ID or name"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+      {/* SEARCH — ALWAYS VISIBLE */}
+      <div className="project-search-bar">
+        <input
+          type="text"
+          placeholder="Search project by ID or name"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button onClick={handleSearchClick}>Search</button>
+      </div>
+
+      {!loading && !error && (
+        <>
+          <ProjectSection
+            title="Owned Projects"
+            projects={ownedProjects}
+            onOpen={openProject}
+          />
+
+          <ProjectSection
+            title="Joined Projects"
+            projects={joinedProjects}
+            onOpen={openProject}
+          />
+
+          {invitedProjects.length > 0 && (
+            <ProjectSection
+              title="Invitations"
+              projects={invitedProjects}
+              onOpen={openProject}
             />
-            <button onClick={handleSearchClick}>Search</button>
-          </div>
+          )}
 
-      {!loading && projects.length === 0 && !error && (
-        <div className="empty-project-wrapper mt-10">
-
-          {/* CREATE CARD */}
+          {/* CREATE PROJECT CARD */}
           <div
             className="empty-project-card card-surface"
             onClick={() => setShowModal(true)}
           >
-            <PlusSquare size={64} strokeWidth={1.5} className="plus" />
-            <p className="empty-project-text">Create your first project</p>
+            <PlusSquare size={52} className="plus" />
+            <p className="empty-project-text">Create new project</p>
           </div>
-        </div>
-      )}
-
-      {!loading && projects.length > 0 && (
-        <div className="project-grid">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="project-card card-surface"
-              onClick={() => openProject(project)}
-            >
-              <div className="project-card-icon">
-                <Folder size={36} />
-              </div>
-              <div className="project-card-title">{project.name}</div>
-              <div className="project-card-meta">
-                Role: {project.role.toUpperCase()}
-              </div>
-            </div>
-          ))}
-        </div>
+        </>
       )}
 
       {showModal && (
