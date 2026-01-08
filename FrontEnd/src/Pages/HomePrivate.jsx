@@ -136,7 +136,7 @@ const HomePrivate = () => {
 
           {/* CREATE PROJECT CARD */}
           <div
-            className="empty-project-card card-surface"
+            className="empty-project-card mt-10"
             onClick={() => setShowModal(true)}
           >
             <PlusSquare size={52} className="plus" />

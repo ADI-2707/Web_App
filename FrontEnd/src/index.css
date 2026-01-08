@@ -1365,6 +1365,11 @@ header .image-text .header-text {
   color: var(--accent-color);
 }
 
+/* Disable lift on empty state */
+.empty-project-card:hover {
+  transform: none;
+}
+
 /* Light mode adjustments */
 :root:not([dark-mode="dark"]) .empty-project-card {
   background: rgba(255, 255, 255, 0.85);
@@ -1526,10 +1531,8 @@ header .image-text .header-text {
     background 0.3s ease;
   transform: translateZ(0);
   will-change: transform, box-shadow;
-}
-
-.card-surface:hover {
-  transform: translateY(-6px) scale(1.02);
+  width: 100%;
+  height: 100%;
 }
 
 /* =========================
@@ -1551,14 +1554,14 @@ header .image-text .header-text {
     4px 8px 18px rgba(0, 0, 0, 0.1);
 }
 
-/* Lift on hover (both modes) */
-.project-card:hover {
+.project-card:hover .card-surface {
   transform: translateY(-6px) scale(1.02);
-  .project-card-icon {
-    color: var(--text-color);
-    opacity: 0.8;
-    transition: all 0.2s ease-in;
-  }
+}
+
+.project-card:hover .project-card-icon {
+  color: var(--text-color);
+  opacity: 0.8;
+  transition: all 0.2s ease-in;
 }
 
 /* =========================
@@ -1593,12 +1596,6 @@ header .image-text .header-text {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.25),
     0 0 22px rgba(255, 255, 255, 0.14);
-
-  .project-card-icon {
-    color: var(--text-color);
-    opacity: 0.7;
-    transition: all 0.2s ease-in;
-  }
 }
 
 /* =========================
@@ -2138,6 +2135,7 @@ header .image-text .header-text {
   overflow-x: auto;
   padding: 0.5rem 0.5rem 1rem;
   scroll-snap-type: x mandatory;
+  contain: layout paint;
 }
 
 .project-row::-webkit-scrollbar {
@@ -2152,4 +2150,6 @@ header .image-text .header-text {
 .project-card {
   min-width: 260px;
   scroll-snap-align: start;
+  transform-origin: center;
+  will-change: transform;
 }
