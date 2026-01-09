@@ -147,6 +147,7 @@ const HomePrivate = () => {
           projects={owned}
           loadMore={loadOwned}
           hasMore={ownedHasMore}
+          onOpenProject={openProject}
         />
 
         <ProjectSection
@@ -154,6 +155,7 @@ const HomePrivate = () => {
           projects={joined}
           loadMore={loadJoined}
           hasMore={joinedHasMore}
+          onOpenProject={openProject}
         />
 
         {/* CREATE PROJECT CARD */}
