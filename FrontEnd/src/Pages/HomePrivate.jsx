@@ -5,6 +5,7 @@ import CreateProjectModal from "../Components/CreateProjectModal";
 import SecurityPinModal from "../Components/SecurityPinModal";
 import ProjectSection from "../Components/ProjectSection";
 import api from "../Utility/api";
+import { isAuthenticated } from "../Utility/auth";
 
 const LIMIT = 10;
 
@@ -41,42 +42,69 @@ const HomePrivate = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  /* ---------- Initial Load ---------- */
+  const loadingOwnedRef = useRef(false);
+  const loadingJoinedRef = useRef(false);
+
+  /* ---------- Initial Load (AUTH-SAFE) ---------- */
   useEffect(() => {
+    if (!isAuthenticated()) return;
+
     loadOwned();
     loadJoined();
   }, []);
 
+  /* ---------- LOAD OWNED PROJECTS ---------- */
   const loadOwned = async () => {
-    if (!ownedHasMore) return;
+    // 1. Strict guard: if already loading, exit.
+    if (!ownedHasMore || loadingOwnedRef.current) return;
+    loadingOwnedRef.current = true;
 
-    const res = await api.get("/api/projects/owned/", {
-      params: { cursor: ownedCursor, limit: LIMIT },
-    });
+    try {
+      const res = await api.get("/api/projects/owned/", {
+        params: { cursor: ownedCursor, limit: LIMIT },
+      });
 
-    setOwned((prev) => {
-      const map = new Map(prev.map((p) => [p.id, p]));
-      res.data.results.forEach((p) => map.set(p.id, p));
-      return Array.from(map.values());
-    });
-    setOwnedCursor(res.data.next_cursor);
-    setOwnedHasMore(res.data.has_more);
+      setOwned((prev) => {
+        // If cursor is null, we are on page 1. REPLACE the list.
+        if (!ownedCursor) return res.data.results;
+
+        // If appending, deduplicate by ID to ensure no repeats.
+        const map = new Map(prev.map((p) => [p.id, p]));
+        res.data.results.forEach((p) => map.set(p.id, p));
+        return Array.from(map.values());
+      });
+
+      setOwnedCursor(res.data.next_cursor);
+      setOwnedHasMore(res.data.has_more);
+    } catch (err) {
+      console.error("Load failed", err);
+    } finally {
+      // 2. Only unlock after the state is fully committed.
+      loadingOwnedRef.current = false;
+    }
   };
 
+  /* ---------- LOAD JOINED PROJECTS ---------- */
   const loadJoined = async () => {
-    if (!joinedHasMore) return;
+    if (!joinedHasMore || loadingJoinedRef.current) return;
+    loadingJoinedRef.current = true;
 
-    const res = await api.get("/api/projects/joined/", {
-      params: { cursor: joinedCursor, limit: LIMIT },
-    });
+    try {
+      const res = await api.get("/api/projects/joined/", {
+        params: { cursor: joinedCursor, limit: LIMIT },
+      });
 
-    setJoined((prev) => {
-      const map = new Map(prev.map((p) => [p.id, p]));
-      res.data.results.forEach((p) => map.set(p.id, p));
-      return Array.from(map.values());
-    });
-    setJoinedCursor(res.data.next_cursor);
-    setJoinedHasMore(res.data.has_more);
+      setJoined((prev) => {
+        const map = new Map(prev.map((p) => [p.id, p]));
+        res.data.results.forEach((p) => map.set(p.id, p));
+        return Array.from(map.values());
+      });
+
+      setJoinedCursor(res.data.next_cursor);
+      setJoinedHasMore(res.data.has_more);
+    } finally {
+      loadingJoinedRef.current = false;
+    }
   };
 
   /* ---------- Modal trigger from navbar ---------- */
@@ -88,17 +116,33 @@ const HomePrivate = () => {
 
   /* ---------- Create Project ---------- */
   const handleCreate = async (payload) => {
-    const res = await api.post("/api/projects/create/", payload);
+    try {
+      const res = await api.post("/api/projects/create/", payload);
+      setSecurityPin(res.data.pin);
+      setShowPinModal(true);
 
-    setSecurityPin(res.data.pin);
-    setShowPinModal(true);
+      // LOCK: Prevent any background observer triggers.
+      loadingOwnedRef.current = true;
 
-    // Reset owned projects pagination
-    setOwned([]);
-    setOwnedCursor(null);
-    setOwnedHasMore(true);
+      // RESET: Clear state for a fresh start.
+      setOwned([]);
+      setOwnedCursor(null);
+      setOwnedHasMore(true);
 
-    await loadOwned();
+      // FETCH: Get the fresh page 1 immediately.
+      const refreshRes = await api.get("/api/projects/owned/", {
+        params: { cursor: null, limit: LIMIT },
+      });
+
+      setOwned(refreshRes.data.results);
+      setOwnedCursor(refreshRes.data.next_cursor);
+      setOwnedHasMore(refreshRes.data.has_more);
+    } catch (err) {
+      console.error("Creation failed", err);
+    } finally {
+      // UNLOCK: Allow infinite scroll for page 2 now.
+      loadingOwnedRef.current = false;
+    }
   };
 
   /* ---------- Search (UI-only for now) ---------- */
@@ -151,7 +195,6 @@ const HomePrivate = () => {
     navigate(`/projects/${project.id}`);
   };
 
-  /* ---------- Render ---------- */
   return (
     <div className="home-private-container">
       <h1 className="home-title">

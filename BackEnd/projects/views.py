@@ -14,11 +14,15 @@ from .utils import generate_project_pin
 
 DEFAULT_LIMIT = 10
 
-
 def cursor_paginate(queryset, cursor, limit):
+    """
+    Standard cursor pagination for descending order (-created_at).
+    We want items where created_at is LESS THAN the cursor.
+    """
     if cursor:
         queryset = queryset.filter(created_at__lt=cursor)
 
+    # Fetch limit + 1 to determine if there's a next page
     items = list(queryset[: limit + 1])
     has_more = len(items) > limit
     return items[:limit], has_more
@@ -27,9 +31,12 @@ def cursor_paginate(queryset, cursor, limit):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def owned_projects(request):
-    cursor = parse_datetime(request.query_params.get("cursor")) if request.query_params.get("cursor") else None
+    # Parse the cursor from query params
+    cursor_str = request.query_params.get("cursor")
+    cursor = parse_datetime(cursor_str) if cursor_str else None
     limit = int(request.query_params.get("limit", DEFAULT_LIMIT))
 
+    # Ensure we order by newest first
     qs = (
         Project.objects
         .filter(root_admin=request.user)
@@ -42,47 +49,57 @@ def owned_projects(request):
 
     projects, has_more = cursor_paginate(qs, cursor, limit)
     serializer = ProjectListSerializer(projects, many=True)
-
+    
+    # The next_cursor is the timestamp of the LAST item in the current page
+    next_cursor = projects[-1].created_at if projects and has_more else None
     return Response({
         "results": serializer.data,
         "has_more": has_more,
-        "next_cursor": projects[-1].created_at if has_more else None
+        "next_cursor": next_cursor
     })
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def joined_projects(request):
-    cursor = parse_datetime(request.query_params.get("cursor")) if request.query_params.get("cursor") else None
+    cursor_str = request.query_params.get("cursor")
+    cursor = parse_datetime(cursor_str) if cursor_str else None
     limit = int(request.query_params.get("limit", DEFAULT_LIMIT))
 
-    memberships = (
+    memberships_qs = (
         ProjectMember.objects
-        .filter(user=request.user)
-        .exclude(project__root_admin=request.user)
+        .filter(
+            user=request.user,
+            role__in=["admin", "user"]
+        )
         .select_related("project")
         .order_by("-joined_at")
     )
 
+    # FIX: Use the same logic as owned_projects for consistency
     if cursor:
-        memberships = memberships.filter(joined_at__lt=cursor)
+        memberships_qs = memberships_qs.filter(joined_at__lt=cursor)
 
-    memberships = memberships[: limit + 1]
+    memberships = list(memberships_qs[: limit + 1])
     has_more = len(memberships) > limit
+    current_page_members = memberships[:limit]
 
     projects = []
-    for m in memberships[:limit]:
+    for m in current_page_members:
         p = m.project
         p.role = m.role
-        p.is_owner = False
+        p.is_owner = (p.root_admin == request.user)
         projects.append(p)
 
     serializer = ProjectListSerializer(projects, many=True)
 
+    # FIX: Use the last item's joined_at for the next cursor
+    next_cursor = current_page_members[-1].joined_at if current_page_members and has_more else None
+
     return Response({
         "results": serializer.data,
         "has_more": has_more,
-        "next_cursor": memberships[limit - 1].joined_at if has_more else None
+        "next_cursor": next_cursor
     })
 
 
@@ -135,12 +152,6 @@ def create_project(request):
         project.set_access_key(raw_access_key)
         project.set_pin(raw_pin)
         project.save()
-
-        ProjectMember.objects.create(
-            project=project,
-            user=request.user,
-            role="admin"
-        )
 
     return Response({
         "id": str(project.id),
