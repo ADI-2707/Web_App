@@ -2607,3 +2607,60 @@ header .image-text .header-text {
   margin-bottom: 1.2rem;
   opacity: 0.85;
 }
+
+/* =========================
+   GLOBAL LOADER
+   ========================= */
+
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000; /* Above sidebar and navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+[dark-mode="dark"] .loader-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.loader-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--accent-color);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  filter: drop-shadow(0 0 8px var(--accent-color));
+}
+
+.loader-text {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--text-color);
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

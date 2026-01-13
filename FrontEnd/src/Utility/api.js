@@ -1,4 +1,4 @@
- import axios from "axios";
+import axios from "axios";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -9,48 +9,54 @@ const api = axios.create({
   },
 });
 
-// Attach access token to every request
+// We will inject the setGlobalLoading function here from AuthContext
+let setLoadingCallback = () => {};
+export const injectLoader = (callback) => {
+  setLoadingCallback = callback;
+};
+
 api.interceptors.request.use((config) => {
+  setLoadingCallback(true); // START LOADER
   const accessToken = localStorage.getItem("accessToken");
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
+}, (error) => {
+  setLoadingCallback(false);
+  return Promise.reject(error);
 });
 
-// Handle token refresh automatically
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    setLoadingCallback(false); // STOP LOADER
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-
       try {
         const refreshToken = localStorage.getItem("refreshToken");
         if (!refreshToken) throw new Error("No refresh token");
 
-        const res = await axios.post(
-          `${API_BASE_URL}/api/auth/token/refresh/`,
-          { refresh: refreshToken }
-        );
+        const res = await axios.post(`${API_BASE_URL}/api/auth/token/refresh/`, {
+          refresh: refreshToken,
+        });
 
         localStorage.setItem("accessToken", res.data.access);
-
         originalRequest.headers.Authorization = `Bearer ${res.data.access}`;
         return api(originalRequest);
       } catch (err) {
-        // Refresh token expired → force logout
+        setLoadingCallback(false);
         localStorage.clear();
         window.location.href = "/login";
         return Promise.reject(err);
       }
     }
 
+    setLoadingCallback(false); // STOP LOADER ON ERROR
     return Promise.reject(error);
   }
 );
