@@ -29,13 +29,13 @@ class RegisterSerializer(serializers.Serializer):
     def validate_email(self, value):
         # Ensure unique email (case-insensitive)
         if User.objects.filter(email__iexact=value).exists():
-            raise serializers.ValidationError("Email already registered.")
+            raise serializers.ValidationError("Email already registered!")
         return value
 
     def validate(self, data):
         if data["password"] != data["confirmPassword"]:
             raise serializers.ValidationError({
-                "confirmPassword": "Passwords do not match."
+                "confirmPassword": "Passwords do not match!"
             })
         return data
 
@@ -70,17 +70,22 @@ class LoginSerializer(serializers.Serializer):
         email = data.get("email")
         password = data.get("password")
 
+        # 1. Check if the user exists at all
+        user_exists = User.objects.filter(username=email).exists()
+        
+        if not user_exists:
+            # If email is not in DB, tell them to register
+            raise serializers.ValidationError({"email": "User not found. Please register first!"})
+
+        # 2. If user exists, try to authenticate with the password
         user = authenticate(username=email, password=password)
 
         if not user:
-            raise serializers.ValidationError(
-                "Invalid email or password."
-            )
+            # If user exists but password is wrong
+            raise serializers.ValidationError({"password": "Invalid credentials!"})
 
         if not user.is_active:
-            raise serializers.ValidationError(
-                "User account is disabled."
-            )
+            raise serializers.ValidationError("User account is disabled!")
 
         data["user"] = user
         return data
